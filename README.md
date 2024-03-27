@@ -122,6 +122,14 @@ Open3D mesh.ply
 you should see a mesh of a room:
 <div align="center"><img src="docs/images/reconstruction_in_docker_trim.png" width=600px/></div>
 
+Open3d installation:
+
+```shell
+$ sudo apt install libc++1 libc++1-10 libc++abi1-10
+$ wget https://github.com/isl-org/Open3D/releases/download/v0.16.0/open3d-app-0.16.0-Ubuntu.deb
+$ sudo dpkg -i open3d-app-0.16.0-Ubuntu.deb
+```
+
 # Docker
 
 We have several dockerfiles (in the `docker` subfolder) which layer on top of one another for the following purposes:

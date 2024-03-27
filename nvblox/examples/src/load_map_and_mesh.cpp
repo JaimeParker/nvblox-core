@@ -24,56 +24,56 @@ limitations under the License.
 using namespace nvblox;
 
 int main(int argc, char* argv[]) {
-  gflags::ParseCommandLineFlags(&argc, &argv, true);
-  google::InitGoogleLogging(argv[0]);
-  FLAGS_alsologtostderr = true;
-  google::InstallFailureSignalHandler();
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
+    google::InitGoogleLogging(argv[0]);
+    FLAGS_alsologtostderr = true;
+    google::InstallFailureSignalHandler();
 
-  CHECK_GT(argc, 0) << "Please pass the path to the map to load.";
-  const std::string base_path = argv[1];
-  LOG(INFO) << "Loading map from " << base_path;
+    CHECK_GT(argc, 0) << "Please pass the path to the map to load.";
+    const std::string base_path = argv[1];
+    LOG(INFO) << "Loading map from " << base_path;
 
-  // Load
-  LayerCake cake = io::loadLayerCakeFromFile(base_path, MemoryType::kDevice);
-  LOG(INFO) << "Loaded cake with voxel size: " << cake.voxel_size();
+    // Load
+    LayerCake cake = io::loadLayerCakeFromFile(base_path, MemoryType::kDevice);
+    LOG(INFO) << "Loaded cake with voxel size: " << cake.voxel_size();
 
-  // Print the names of the loaded layers.
-  LOG(INFO) << "Loaded layers:";
-  for (const auto& id_layer_pair : cake.get_layers()) {
-    LOG(INFO) << "Loaded: "
-              << LayerTypeRegister::getLayerName(id_layer_pair.first);
-  }
-
-  // Mesh
-  LOG(INFO) << "Meshing";
-  MeshIntegrator mesh_integrator;
-  MeshLayer mesh_layer(cake.block_size(), MemoryType::kDevice);
-  mesh_integrator.integrateMeshFromDistanceField(cake.get<TsdfLayer>(),
-                                                 &mesh_layer);
-  mesh_integrator.colorMesh(cake.get<ColorLayer>(), &mesh_layer);
-  LOG(INFO) << "Done";
-
-  std::string output_path;
-  if (argc > 2) {
-    output_path = argv[2];
-  } else {
-    output_path = "./mesh.ply";
-  }
-  LOG(INFO) << "Writing mesh to: " << output_path;
-  CHECK(io::outputMeshLayerToPly(mesh_layer, output_path));
-  LOG(INFO) << "Done";
-
-  // Esdf
-  if (cake.exists<EsdfLayer>()) {
-    if (argc > 3) {
-      output_path = argv[3];
-    } else {
-      output_path = "./esdf.ply";
+    // Print the names of the loaded layers.
+    LOG(INFO) << "Loaded layers:";
+    for (const auto& id_layer_pair : cake.get_layers()) {
+        LOG(INFO) << "Loaded: "
+                  << LayerTypeRegister::getLayerName(id_layer_pair.first);
     }
-    LOG(INFO) << "Writing esdf to: " << output_path;
-    CHECK(io::outputVoxelLayerToPly(cake.get<EsdfLayer>(), output_path));
-    LOG(INFO) << "Done";
-  }
 
-  LOG(INFO) << "Finished running example.";
+    // Mesh
+    LOG(INFO) << "Meshing";
+    MeshIntegrator mesh_integrator;
+    MeshLayer mesh_layer(cake.block_size(), MemoryType::kDevice);
+    mesh_integrator.integrateMeshFromDistanceField(cake.get<TsdfLayer>(),
+                                                 &mesh_layer);
+    mesh_integrator.colorMesh(cake.get<ColorLayer>(), &mesh_layer);
+    LOG(INFO) << "Done";
+
+    std::string output_path;
+    if (argc > 2) {
+        output_path = argv[2];
+    } else {
+        output_path = "./mesh.ply";
+    }
+    LOG(INFO) << "Writing mesh to: " << output_path;
+    CHECK(io::outputMeshLayerToPly(mesh_layer, output_path));
+    LOG(INFO) << "Done";
+
+    // Esdf
+    if (cake.exists<EsdfLayer>()) {
+        if (argc > 3) {
+            output_path = argv[3];
+        } else {
+            output_path = "./esdf.ply";
+        }
+        LOG(INFO) << "Writing esdf to: " << output_path;
+        CHECK(io::outputVoxelLayerToPly(cake.get<EsdfLayer>(), output_path));
+        LOG(INFO) << "Done";
+    }
+
+    LOG(INFO) << "Finished running example.";
 }

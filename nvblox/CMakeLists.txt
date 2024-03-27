@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22.1)
-
+set(CMAKE_CUDA_ARCHITECTURES "native")
 # set the project name and version
 project(nvblox VERSION 0.0.4 LANGUAGES CXX CUDA)
 
