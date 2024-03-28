@@ -16,3 +16,7 @@ target_link_libraries(load_map_and_mesh
 )
 
 set_target_properties(load_map_and_mesh PROPERTIES CUDA_SEPARABLE_COMPILATION OFF)
+
+add_executable(my_example src/my_example.cc)
+target_link_libraries(nvblox_lib)
+set_target_properties(my_example PROPERTIES CUDA_SEPARABLE_COMPILATION OFF)
